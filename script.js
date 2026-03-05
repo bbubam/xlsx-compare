@@ -1,5 +1,16 @@
 let fileA=null,fileB=null,wbA=null,wbB=null,allChanges=[],sheetDiffs={};
 
+function resetApp(){
+  fileA=null;fileB=null;wbA=null;wbB=null;allChanges=[];sheetDiffs={};
+  ['f1','f2'].forEach(id=>document.getElementById(id).value='');
+  ['fn1','fn2'].forEach(id=>document.getElementById(id).textContent='Drop or click to select');
+  document.getElementById('cmpBtn').disabled=true;
+  document.getElementById('viewTabs').style.display='none';
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.view-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.getElementById('placeholder').style.display='flex';
+}
+
 function setupDZ(dzId,inputId,fnId,slot){
   const dz=document.getElementById(dzId),inp=document.getElementById(inputId);
   inp.addEventListener('change',e=>{if(e.target.files[0])setFile(slot,e.target.files[0],fnId)});
@@ -10,7 +21,9 @@ function setupDZ(dzId,inputId,fnId,slot){
 function setFile(slot,file,fnId){
   if(slot==='A')fileA=file;else fileB=file;
   document.getElementById(fnId).textContent=file.name;
-  document.getElementById('cmpBtn').disabled=!(fileA&&fileB);
+  const ready=fileA&&fileB;
+  document.getElementById('cmpBtn').disabled=!ready;
+  if(ready)document.getElementById('cmpBtn').click();
 }
 setupDZ('dz1','f1','fn1','A');
 setupDZ('dz2','f2','fn2','B');
@@ -237,7 +250,8 @@ function renderGrid(name){
     const isL=lockedLeft.has(ci),isR=lockedRight.has(ci);
     const cls=isL?'cl':isR?'cr-pin':'';
     const sticky=isL?` style="position:sticky;left:${leftOffMap[ci]}px;z-index:3"`:isR?` style="position:sticky;right:${rightOffMap[ci]}px;z-index:3"`:'';
-    html+=`<th class="${cls}" data-ci="${ci}"${sticky}>${esc(headers[c]||XLSX.utils.encode_col(c))}<span class="resize-h" data-rh="${ci}"></span></th>`;
+    const thChg=changedColsSet.has(c)?' th-chg':'';
+    html+=`<th class="${cls}${thChg}" data-ci="${ci}"${sticky}>${esc(headers[c]||XLSX.utils.encode_col(c))}<span class="resize-h" data-rh="${ci}"></span></th>`;
   });
   html+='</tr></thead><tbody>';
 
@@ -249,7 +263,7 @@ function renderGrid(name){
     const rowCls=isLockedRow?'row-locked':'';
 
     if(rowType==='deleted'){
-      html+=`<tr class="${rowCls} rr-row" data-ri="${ri}"><td class="rn" data-ri="${ri}" style="left:0">${ri}<span class="resize-v" data-rv="${ri}"></span></td>`;
+      html+=`<tr class="${rowCls} rr-row" data-ri="${ri}"><td class="rn rn-chg" data-ri="${ri}" style="left:0">${ri}<span class="resize-v" data-rv="${ri}"></span></td>`;
       cols.forEach((c,ci)=>{
         const isL=lockedLeft.has(ci),isR=lockedRight.has(ci);
         let cls='cr'+(isL?' cl':isR?' cr-pin':'');
@@ -258,7 +272,7 @@ function renderGrid(name){
       });
       html+='</tr>';
     } else if(rowType==='added'){
-      html+=`<tr class="${rowCls} ra-row" data-ri="${ri}"><td class="rn" data-ri="${ri}" style="left:0">${ri}<span class="resize-v" data-rv="${ri}"></span></td>`;
+      html+=`<tr class="${rowCls} ra-row" data-ri="${ri}"><td class="rn rn-chg" data-ri="${ri}" style="left:0">${ri}<span class="resize-v" data-rv="${ri}"></span></td>`;
       cols.forEach((c,ci)=>{
         const isL=lockedLeft.has(ci),isR=lockedRight.has(ci);
         let cls='ca'+(isL?' cl':isR?' cr-pin':'');
@@ -267,7 +281,7 @@ function renderGrid(name){
       });
       html+='</tr>';
     } else if(rowType==='modified'){
-      html+=`<tr class="${rowCls}" data-ri="${ri}"><td class="rn" data-ri="${ri}" style="left:0">${ri}<span class="resize-v" data-rv="${ri}"></span></td>`;
+      html+=`<tr class="${rowCls}" data-ri="${ri}"><td class="rn rn-chg" data-ri="${ri}" style="left:0">${ri}<span class="resize-v" data-rv="${ri}"></span></td>`;
       cols.forEach((c,ci)=>{
         const isL=lockedLeft.has(ci),isR=lockedRight.has(ci);
         const sticky=isL?` style="position:sticky;left:${leftOffMap[ci]}px"`:isR?` style="position:sticky;right:${rightOffMap[ci]}px"`:'';
