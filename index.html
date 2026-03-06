@@ -81,7 +81,7 @@ header h1:hover{color:#6ab0f5}
 .tbtn{background:#2a2a2e;border:1px solid #484850;color:#bbb;border-radius:5px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s}
 .tbtn:hover{background:#333}
 .tbtn.active{background:#0e7eff;border-color:#0e7eff;color:#fff}
-.lock-hint{font-size:12px;color:#555;font-style:italic}
+.lock-hint{font-size:12px;color:#555;font-style:normal}.lock-hint kbd{font-family:inherit;background:#2a2a2a;border:1px solid #444;border-radius:3px;padding:1px 5px;font-size:11px;color:#ccc}.lock-hint .lh-action{color:#888}
 .grid-wrap{overflow:auto;flex:1;border:1px solid #484850;border-radius:0 6px 6px 6px}
 table{border-collapse:collapse;font-size:14px}
 th{background:#222226;color:#ccc;padding:8px 16px;border:1px solid #444;font-weight:700;position:sticky;top:0;z-index:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;min-width:60px;letter-spacing:.2px}
@@ -112,13 +112,16 @@ th.cr-pin{background:#0e1e30!important;color:#6ab0f5;border-bottom:2px solid #0e
 td.cl{position:sticky;z-index:1;background:#0e1e2a!important;border-right:2px solid #0e7eff44}
 td.cr-pin{position:sticky;z-index:1;background:#0e1e2a!important;border-left:2px solid #0e7eff44}
 tr.row-locked>td{background:#0e1e2a;border-bottom:2px solid #0e7eff22}
-.no-chg{color:#666;font-size:14px;font-weight:500;padding:12px 0}
+th.th-ignored{background:#2a2a2e!important;color:#555;border-bottom:2px solid #555}
+th.th-ignored .ign-badge{font-size:10px;color:#555;margin-left:4px;font-weight:400}
+th .lock-icon{font-size:11px;margin-right:4px;opacity:.8}
+th .lock-icon-r{margin-right:0;margin-left:4px}
 
-/* ALL CHANGES */
+.no-chg{color:#666;font-size:14px;font-weight:500;padding:12px 0}
 .chg-list{display:flex;flex-direction:column;gap:6px}
-.chg-item{background:#1f1f22;border:1px solid #484850;border-radius:6px;padding:11px 18px;font-size:14px;font-weight:500;display:grid;grid-template-columns:130px 150px 100px 1fr 1fr;gap:12px;align-items:center;color:#e8e8e8;transition:background .1s}
+.chg-item{background:#1f1f22;border:1px solid #484850;border-radius:6px;padding:11px 18px;font-size:14px;font-weight:500;display:grid;grid-template-columns:130px minmax(150px,1fr) 100px 1fr 1fr;gap:12px;align-items:center;color:#e8e8e8;transition:background .1s}
 .chg-item:hover{background:#252528}
-.chg-hdr{background:#222226;border:1px solid #484850;border-radius:6px;padding:9px 18px;font-size:12px;color:#888;display:grid;grid-template-columns:130px 150px 100px 1fr 1fr;gap:12px;font-weight:700;flex-shrink:0;text-transform:uppercase;letter-spacing:.4px}
+.chg-hdr{background:#222226;border:1px solid #484850;border-radius:6px;padding:9px 18px;font-size:12px;color:#888;display:grid;grid-template-columns:130px minmax(150px,1fr) 100px 1fr 1fr;gap:12px;font-weight:700;flex-shrink:0;text-transform:uppercase;letter-spacing:.4px}
 .val-old{color:#ff6b6b;text-decoration:line-through;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .val-new{color:#5ddb9e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .filter-bar{display:flex;gap:10px;align-items:center;flex-shrink:0}
@@ -132,16 +135,16 @@ tr.row-locked>td{background:#0e1e2a;border-bottom:2px solid #0e7eff22}
 <header>
   <h1 onclick="resetApp()">📊 XLSX Compare</h1>
   <div class="dz" id="dz1" onclick="document.getElementById('f1').click()">
-    <input type="file" id="f1" accept=".xlsx"/>
+    <input type="file" id="f1" accept=".xlsx,.csv"/>
     <span class="lbl">File A — Original</span>
     <span class="fn" id="fn1">Drop or click to select</span>
-    <span class="hint">Supports .xlsx files</span>
+    <span class="hint">Supports .xlsx and .csv</span>
   </div>
   <div class="dz" id="dz2" onclick="document.getElementById('f2').click()">
-    <input type="file" id="f2" accept=".xlsx"/>
+    <input type="file" id="f2" accept=".xlsx,.csv"/>
     <span class="lbl">File B — Modified</span>
     <span class="fn" id="fn2">Drop or click to select</span>
-    <span class="hint">Supports .xlsx files</span>
+    <span class="hint">Supports .xlsx and .csv</span>
   </div>
   <button id="cmpBtn" disabled>Compare</button>
 </header>
@@ -168,7 +171,13 @@ tr.row-locked>td{background:#0e1e2a;border-bottom:2px solid #0e7eff22}
     <button class="tbtn" id="hideUnchangedBtn" onclick="toggleHideUnchanged()">Hide Unchanged</button>
     <button class="tbtn" onclick="clearLocks()">Clear Locks</button>
     <span class="sep">|</span>
-    <span class="lock-hint">Click col header: lock left · Shift+click: lock right · Click row #: lock row · Drag edges to resize</span>
+    <span class="lock-hint">
+      <kbd>Click</kbd> <span class="lh-action">col header — lock left</span> &nbsp;|&nbsp;
+      <kbd>Shift+click</kbd> <span class="lh-action">— lock right</span> &nbsp;|&nbsp;
+      <kbd>Alt+click</kbd> <span class="lh-action">— ignore col</span> &nbsp;|&nbsp;
+      <kbd>Click</kbd> <span class="lh-action">row # — lock row</span> &nbsp;|&nbsp;
+      <kbd>Drag</kbd> <span class="lh-action">edges — resize</span>
+    </span>
   </div>
   <div class="grid-wrap" id="gridWrap"></div>
 </div>
@@ -191,6 +200,6 @@ tr.row-locked>td{background:#0e1e2a;border-bottom:2px solid #0e7eff22}
 
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
 <script src="script.js"></script>
-<div style="position:fixed;bottom:6px;right:10px;font-size:11px;color:#333;pointer-events:none">v1.0.2</div>
+<div style="position:fixed;bottom:6px;right:10px;font-size:12px;color:#666;pointer-events:none;font-weight:600;letter-spacing:.3px">v1.2.0</div>
 </body>
 </html>
