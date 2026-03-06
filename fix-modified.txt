@@ -1,0 +1,20 @@
+    } else if(rowType==='modified'){
+      html+=`<tr class="${rowCls}" data-ri="${ri}"><td class="rn rn-chg" data-ri="${ri}" style="left:0">${ri}<span class="resize-v" data-rv="${ri}"></span></td>`;
+      cols.forEach((c,ci)=>{
+        const isL=lockedLeft.has(ci),isR=lockedRight.has(ci);
+        const sticky=isL?` style="position:sticky;left:${leftOffMap[ci]}px"`:isR?` style="position:sticky;right:${rightOffMap[ci]}px"`:''
+        if(changedCols.has(c)){
+          let cls='cm'+(isL?' cl':isR?' cr-pin':'');
+          html+=`<td class="${cls}"${sticky}><span class="diff-old">${esc(rowA[c]??'')}</span><span class="diff-arr">→</span><span class="diff-new">${esc(rowB[c]??'')}</span></td>`;
+        } else if(newCols?.has(c)){
+          let cls='ca'+(isL?' cl':isR?' cr-pin':'');
+          html+=`<td class="${cls}"${sticky}>${esc(rowB[c]??'')}</td>`;
+        } else if(deletedCols?.has(c)){
+          let cls='cr'+(isL?' cl':isR?' cr-pin':'');
+          html+=`<td class="${cls}"${sticky}>${esc(rowA[c]??'')}</td>`;
+        } else {
+          let cls=isL?'cl':isR?'cr-pin':'';
+          html+=`<td class="${cls}"${sticky}>${esc(rowB[c]??'')}</td>`;
+        }
+      });
+      html+='</tr>';

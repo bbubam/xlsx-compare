@@ -98,13 +98,14 @@ tr:hover>td.cm{background:#5a4500!important}
 th.rn{z-index:3;cursor:pointer;background:#1a1a1d!important}
 th.rn:hover{background:#1e2a3a!important;color:#6ab0f5}
 th.th-chg{background:#2a2200!important;color:#ffd166;border-bottom:2px solid #ffd16688}
+th.th-new{background:#1a4a1a!important;color:#5ddb9e;border-bottom:2px solid #5ddb9e88}
+th.th-del{background:#4a1a1a!important;color:#ff6b6b;border-bottom:2px solid #ff6b6b88}
 .rn.rn-chg{color:#ffd166!important;background:#2a2200!important}
 td.ca{background:#1a4a1a!important;color:#5ddb9e;font-weight:700}
 td.cr{background:#4a1a1a!important;color:#ff8080;font-weight:700}
-td.cm{background:#3a2e00!important;color:#ffd166;font-weight:700}
-td.cm .diff-old{color:#ff8080;text-decoration:line-through;font-weight:600}
-td.cm .diff-arr{color:#666;margin:0 5px}
-td.cm .diff-new{color:#5ddb9e;font-weight:700}
+td.cm{background:#3a2e00!important;color:#ffd166;font-weight:700;white-space:normal;padding:4px 8px!important}
+td.cm .diff-old{display:block;background:#5a1a1a;color:#ff8080;text-decoration:line-through;font-weight:600;font-size:12px;border-radius:3px;padding:2px 6px;margin-bottom:3px;min-height:18px}
+td.cm .diff-new{display:block;background:#1a4a1a;color:#5ddb9e;font-weight:700;border-radius:3px;padding:2px 6px;min-height:18px}
 th.cl{background:#0e1e30!important;color:#6ab0f5;border-bottom:2px solid #0e7eff}
 th.cr-pin{background:#0e1e30!important;color:#6ab0f5;border-bottom:2px solid #0e7eff}
 td.cl{position:sticky;z-index:1;background:#0e1e2a!important;border-right:2px solid #0e7eff44}
@@ -189,6 +190,6 @@ tr.row-locked>td{background:#0e1e2a;border-bottom:2px solid #0e7eff22}
 
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="script.js"></script>
-<div style="position:fixed;bottom:6px;right:10px;font-size:11px;color:#333;pointer-events:none">v1.0.1</div>
+<div style="position:fixed;bottom:6px;right:10px;font-size:11px;color:#333;pointer-events:none">v1.0.2</div>
 </body>
 </html>
