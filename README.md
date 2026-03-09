@@ -38,6 +38,12 @@ A lightweight, zero-install browser tool for comparing two `.xlsx` or `.csv` fil
 
 ## Changelog
 
+### v1.2.2
+- CSV missing column detection: LCS-based column mapping for headerless CSVs
+- Fixed tie-breaking to correctly identify last matching deleted column position
+- Fixed summary counter showing 0 when only deleted columns differ
+- Headerless CSVs no longer show data values as column headers
+
 ### v1.2.1
 - Right-locked column lock icon now appears after the header text (on the right)
 
