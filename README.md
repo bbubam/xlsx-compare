@@ -38,6 +38,9 @@ A lightweight, zero-install browser tool for comparing two `.xlsx` or `.csv` fil
 
 ## Changelog
 
+### v1.2.3
+- Fix similarity-based row matching not triggering (branch was unreachable due to truthy string check)
+
 ### v1.2.2
 - CSV missing column detection: LCS-based column mapping for headerless CSVs
 - Fixed tie-breaking to correctly identify last matching deleted column position
